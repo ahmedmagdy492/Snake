@@ -135,6 +135,7 @@ int main() {
       }
 
       if(isGameOver) {
+	DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLACK);
 	DrawText("Game Over", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-120)/2, 120, WHITE);
 	IntToAsci(GetPlayerScore(), scoreText);
 	DrawText("Score: ", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
