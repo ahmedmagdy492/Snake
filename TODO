@@ -1,0 +1,5 @@
+-Spwan the apple in places that are away from the player
+-Add collision detection to snake body
+-Add the ability for the snake to go beyond on the x axis and come back from the other end
+-Add a Texture Background for the game
+-Render a Texture of the apple instead of the square

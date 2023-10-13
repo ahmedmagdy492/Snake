@@ -1,0 +1,18 @@
+#pragma once
+
+#include <raylib.h>
+
+struct Apple {
+  int x;
+  int y;
+  int w;
+  int h;
+  Color color;
+};
+
+struct Apple apple = { -10, -10, 50, 50, RED };
+
+void SetPos(int x, int y) {
+  apple.x = x;
+  apple.y = y;
+}

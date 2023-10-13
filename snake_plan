@@ -1,0 +1,35 @@
+the player model:
+a small orange triangle that is made up of pixels
+
+player directions:
+-if the player go left or right beyond the screen the player will teleported to the other end of the screen with the same y value but x will be reset to be either 0 or WindowWidth.
+-if the player tries to go beyond the screen in any y direction (up/down) he will be collided therefore lose the game
+
+1.spawn the apple in a random position within the window limit
+2.spwan the player in the middle of the game screen
+3.once the user hits one of the arrow keys the player will move in that direction:
+  -when the player moves in a direction the whole player model has to be totally rotated
+4.if the user hits the apple a point will be added to his score
+5.after 10 seconds the apple will be removed and spawned in a totally different spot (calculated randomly as well)
+6.if the player hits itself he will lose
+7.if the player hits the upper or bottom walls he will also lose
+
+
+Pixel:
+-Vector2(x,y)
+-Color
+-Pixel Width, Height
+
+Player:
+-Array of Pixel
+-Speed
+-Current Direction
+-Is Moving
+-Width, Height
+
+How to Render it:
+iterate over the buffer that contains the pixels and draw them with their positions onto the screen
+
+How to Move it(Direction):
+multiply the speed by either 1 or -1 and add the speed to either x or y of each pixel depending on the pressed arrow key
+
