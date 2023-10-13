@@ -1,0 +1,8 @@
+./build/*
+./core
+core
+*~
+src/*~
+src/include/*~
+src/#*#
+src/include/#*#

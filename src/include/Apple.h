@@ -14,7 +14,7 @@ struct Apple {
   Color color;
 };
 
-struct Apple apple = { APPLE_WIDTH, APPLE_HEIGHT, APPLE_WIDTH, APPLE_HEIGHT, RED };
+struct Apple apple = { 150, 150, APPLE_WIDTH, APPLE_HEIGHT, RED };
 
 void SetApplePos(int x, int y) {
   apple.x = x;

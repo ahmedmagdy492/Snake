@@ -35,7 +35,7 @@ void Append(struct Square* square) {
     snake.head = snake.tail = square;
   }
   else {
-    square->x = snake.tail->x + snake.tail->w;
+    square->x = snake.tail->x + speed;
     square->y = snake.tail->y;
     square->color = YELLOW;
     snake.tail->next = square;
@@ -88,9 +88,13 @@ void Move(struct Direction* dir, int sw, int sh) {
 
   if(ptr->cur_dir.axis == 'x') {
     ptr->x += (speed * ptr->cur_dir.direction);
+    if(ptr->x > sw) ptr->x = 0;
+    else if (ptr->x < 0) ptr->x = sw;
   }
   else if(ptr->cur_dir.axis == 'y') {
     ptr->y += (speed * ptr->cur_dir.direction);
+    if(ptr->y > sh) ptr->y = 0;
+    else if(ptr->y < 0) ptr->y = sh;
   }
 
   ptr = ptr->next;
@@ -127,4 +131,26 @@ void ResetScore() {
 
 int GetPlayerScore() {
   return score;
+}
+
+int AmICollidingWithMySelf() {
+  struct Square* head = snake.head;
+
+  if(head != NULL && head->next != NULL) {
+    struct Square* ptr = head->next;
+
+    while(ptr != NULL) {
+      if(
+	 ((head->x + head->w) >= ptr->x && (head->x + head->w) <= (ptr->x + ptr->w)) &&
+	 (head->y >= ptr->y && head->y <= (ptr->y + ptr->h))
+	 ) {
+	   return 1;
+      }
+      ptr = ptr->next;
+    }
+
+    return 0;
+  }
+
+  return 0;
 }
