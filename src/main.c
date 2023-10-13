@@ -12,6 +12,8 @@ const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 int timer = 0;
 int isGameOver = 0;
+int prevKey = -1;
+char scoreText[SCORE_LEN];
 
 void RandomizeApplePosition() {
   int x = GetRandNumber(SCREEN_WIDTH - GetAppleWidth());
@@ -19,8 +21,30 @@ void RandomizeApplePosition() {
   SetApplePos(x, y);
 }
 
+struct Square* ResetGame() {
+  Clear();
+  isGameOver = 0;
+  SetPlayerScore(0);
+  timer = 0;
+  prevKey = -1;
+  memset(scoreText, 0, SCORE_LEN);
+  RandomizeApplePosition();
+
+  struct Square* square = (struct Square*)malloc(sizeof(struct Square));
+  square->x = 10;
+  square->y = 10;
+  square->w = square->h = SQUARE_LEN;
+  square->color = ORANGE;
+  square->next = NULL;
+  square->prev = NULL;
+  Append(square);
+  return square;
+}
+
 int main() {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Snake");
+  InitAudioDevice();
+  
   struct Square* square = (struct Square*)malloc(sizeof(struct Square));
   square->x = 10;
   square->y = 10;
@@ -32,15 +56,17 @@ int main() {
 
   SetTargetFPS(60);
 
-  char scoreText[SCORE_LEN];
+  Sound music = LoadSound("resources/scoreplay.ogg");
+  Sound fail = LoadSound("resources/fail.ogg");
+
   struct Direction dir = {1, 'x'};
-  int prevKey = -1;
 
   while(!WindowShouldClose()) {
     if(!isGameOver) {
       if (IsKeyDown(KEY_RIGHT)) {
 	if(prevKey == KEY_LEFT) {
 	  isGameOver = 1;
+	  PlaySound(fail);
 	}
 	prevKey = KEY_RIGHT;
 	dir.direction = 1;
@@ -49,6 +75,7 @@ int main() {
       else if (IsKeyDown(KEY_LEFT)) {
 	if(prevKey == KEY_RIGHT) {
 	  isGameOver = 1;
+	  PlaySound(fail);
 	}
 	prevKey = KEY_LEFT;
 	dir.direction = -1;
@@ -57,6 +84,7 @@ int main() {
       else if (IsKeyDown(KEY_UP)) {
 	if(prevKey == KEY_DOWN) {
 	  isGameOver = 1;
+	  PlaySound(fail);
 	}
 	prevKey = KEY_UP;
 	dir.direction = -1;
@@ -65,6 +93,7 @@ int main() {
       else if (IsKeyDown(KEY_DOWN)) {
 	if(prevKey == KEY_UP) {
 	  isGameOver = 1;
+	  PlaySound(fail);
 	}
 	prevKey = KEY_DOWN;
 	dir.direction = 1;
@@ -84,11 +113,12 @@ int main() {
       DrawText(scoreText, (SCREEN_WIDTH-20)/2, 10, 40, WHITE);
 
       if(AmICollidingWithMySelf()) {
-	printf("Collided with my self\n");
+	//printf("Collided with my self\n");
 	// TODO: GAME OVER
       }
 
       if(HasPlayerCollidedWithApple(square->x, square->y, square->w, square->h)) {
+	PlaySound(music);
 	SetPlayerScore(GetPlayerScore()+1);
 	RandomizeApplePosition();
 
@@ -109,6 +139,10 @@ int main() {
 	IntToAsci(GetPlayerScore(), scoreText);
 	DrawText("Score: ", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
 	DrawText(scoreText, (SCREEN_WIDTH)/2+100, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
+
+	if(IsKeyDown(KEY_ENTER)) {
+	  square = ResetGame();
+	}
       }
     
       EndDrawing();
@@ -117,6 +151,10 @@ int main() {
 	++timer;
       }
   }
+
+  UnloadSound(music);
+  UnloadSound(fail);
+  CloseAudioDevice();
 
   CloseWindow();
 
