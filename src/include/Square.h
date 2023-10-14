@@ -33,8 +33,6 @@ static struct DLinkedList snake = { NULL, NULL };
 void Append(struct Square* square) {
   if(snake.head == NULL && snake.tail == NULL) {
     snake.head = snake.tail = square;
-    square->cur_dir.direction = 1;
-    square->cur_dir.direction = 'x';
   }
   else {
     square->x = snake.tail->x;
@@ -149,14 +147,18 @@ static int GetNodesCount() {
   return count;
 }
 
+/*
+  || ((head->cur_dir.direction == 1 && head->cur_dir.axis == 'y') && (ptr->cur_dir.direction == -1 && ptr->cur_dir.axis == 'x'))
+ */
 int AmICollidingWithMySelf() {
   struct Square* head = snake.head;
   struct Square* ptr = snake.tail;
   int linkedListCount = GetNodesCount();
   int noOfElementsToCheck = 0.33 * linkedListCount;
+  printf("0.33*nodes count = %d\n", noOfElementsToCheck);
   int i = linkedListCount;
 
-  if(linkedListCount <= 5) {
+  if(linkedListCount <= 10) {
     return 0;
   }
 
@@ -164,9 +166,11 @@ int AmICollidingWithMySelf() {
     if(i < 0) {
       return 0;
     }
-    
-    if(((head->x) >= ptr->x && (head->x) <= (ptr->x + ptr->w)) && (head->y >= ptr->y && head->y <= (ptr->y + ptr->h)) ) {
-      return 1;
+
+    if( ((head->cur_dir.direction == -1 && head->cur_dir.axis == 'x') && (ptr->cur_dir.direction == 1 && ptr->cur_dir.axis == 'y')) || ( (head->cur_dir.direction == -1 && head->cur_dir.axis == 'x') && (ptr->cur_dir.direction == -1 && ptr->cur_dir.axis == 'y')											  )) {
+      if(((head->x) >= ptr->x && (head->x) <= (ptr->x + ptr->w)) && (head->y >= ptr->y && head->y <= (ptr->y + ptr->h)) ) {
+	return 1;
+      }
     }
     ptr = ptr->prev;
     --i;

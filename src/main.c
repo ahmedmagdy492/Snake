@@ -116,54 +116,54 @@ int main() {
       }
     }
     
-      BeginDrawing();
-      ClearBackground(DARKGREEN);
+    BeginDrawing();
+    ClearBackground(DARKGREEN);
     
-      DrawSnake();
-      DrawApple();
+    DrawSnake();
+    DrawApple();
 
+    IntToAsci(GetPlayerScore(), scoreText);
+    DrawText(scoreText, (SCREEN_WIDTH-20)/2, 10, 40, WHITE);
+
+    if(AmICollidingWithMySelf()) {
+      isGameOver = 1;
+      PlaySound(fail);
+    }
+
+    if(HasPlayerCollidedWithApple(square->x, square->y, square->w, square->h)) {
+      PlaySound(music);
+      SetPlayerScore(GetPlayerScore()+1);
+      RandomizeApplePosition();
+
+      struct Square* newSquare = (struct Square*)malloc(sizeof(struct Square));
+      newSquare->w = newSquare->h = SQUARE_LEN;
+      newSquare->next = NULL;
+      newSquare->prev = NULL;
+      Append(newSquare);
+    }
+
+    if(timer == APPLE_CHANGE_POS_TIME) {
+      timer = 0;
+      RandomizeApplePosition();
+    }
+
+    if(isGameOver) {
+      DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, CLITERAL(Color){ 0, 0, 0, 128 });
+      DrawText("Game Over", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-120)/2, 120, WHITE);
       IntToAsci(GetPlayerScore(), scoreText);
-      DrawText(scoreText, (SCREEN_WIDTH-20)/2, 10, 40, WHITE);
+      DrawText("Score: ", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
+      DrawText(scoreText, (SCREEN_WIDTH)/2+100, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
 
-      if(AmICollidingWithMySelf()) {
-	printf("Collided with my self\n");
-	// TODO: GAME OVER
+      if(IsKeyDown(KEY_ENTER)) {
+	square = ResetGame();
       }
-
-      if(HasPlayerCollidedWithApple(square->x, square->y, square->w, square->h)) {
-	PlaySound(music);
-	SetPlayerScore(GetPlayerScore()+1);
-	RandomizeApplePosition();
-
-	struct Square* newSquare = (struct Square*)malloc(sizeof(struct Square));
-	newSquare->w = newSquare->h = SQUARE_LEN;
-	newSquare->next = NULL;
-	newSquare->prev = NULL;
-	Append(newSquare);
-      }
-
-      if(timer == APPLE_CHANGE_POS_TIME) {
-	timer = 0;
-	RandomizeApplePosition();
-      }
-
-      if(isGameOver) {
-	DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, CLITERAL(Color){ 0, 0, 0, 128 });
-	DrawText("Game Over", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-120)/2, 120, WHITE);
-	IntToAsci(GetPlayerScore(), scoreText);
-	DrawText("Score: ", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
-	DrawText(scoreText, (SCREEN_WIDTH)/2+100, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);
-
-	if(IsKeyDown(KEY_ENTER)) {
-	  square = ResetGame();
-	}
-      }
+    }
     
-      EndDrawing();
+    EndDrawing();
 
-      if(!isGameOver) {
-	++timer;
-      }
+    if(!isGameOver) {
+      ++timer;
+    }
   }
 
   UnloadSound(music);
