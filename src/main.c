@@ -12,6 +12,7 @@ const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 int timer = 0;
 int isGameOver = 0;
+int isPlaying = 0;
 int prevKey = -1;
 char scoreText[SCORE_LEN];
 
@@ -24,6 +25,7 @@ void RandomizeApplePosition() {
 struct Square* ResetGame() {
   Clear();
   isGameOver = 0;
+  isPlaying = 1;
   SetPlayerScore(0);
   timer = 0;
   prevKey = -1;
@@ -60,6 +62,7 @@ int main() {
   Sound fail = LoadSound("resources/fail.ogg");
 
   struct Direction dir = {1, 'x'};
+  SetExitKey(KEY_Q);
 
   while(!WindowShouldClose()) {
     if(!isGameOver) {
@@ -113,7 +116,7 @@ int main() {
       DrawText(scoreText, (SCREEN_WIDTH-20)/2, 10, 40, WHITE);
 
       if(AmICollidingWithMySelf()) {
-	//printf("Collided with my self\n");
+	printf("Collided with my self\n");
 	// TODO: GAME OVER
       }
 
@@ -135,7 +138,7 @@ int main() {
       }
 
       if(isGameOver) {
-	DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLACK);
+	DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, CLITERAL(Color){ 0, 0, 0, 128 });
 	DrawText("Game Over", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-120)/2, 120, WHITE);
 	IntToAsci(GetPlayerScore(), scoreText);
 	DrawText("Score: ", (SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-80)/2+120, 80, WHITE);

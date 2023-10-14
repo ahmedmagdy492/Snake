@@ -35,7 +35,7 @@ void Append(struct Square* square) {
     snake.head = snake.tail = square;
   }
   else {
-    square->x = snake.tail->x + speed;
+    square->x = snake.tail->x;
     square->y = snake.tail->y;
     square->color = YELLOW;
     snake.tail->next = square;
@@ -133,23 +133,39 @@ int GetPlayerScore() {
   return score;
 }
 
+static int GetNodesCount() {
+  int count = 0;
+  struct Square* ptr = snake.head;
+
+  while(ptr != NULL) {
+    ++count;
+    ptr = ptr->next;
+  }
+
+  return count;
+}
+
 int AmICollidingWithMySelf() {
   struct Square* head = snake.head;
+  struct Square* ptr = snake.tail;
+  int linkedListCount = GetNodesCount();
+  int noOfElementsToCheck = 0.33 * linkedListCount;
+  int i = linkedListCount;
 
-  if(head != NULL && head->next != NULL) {
-    struct Square* ptr = head->next;
-
-    while(ptr != NULL) {
-      if(
-	 ((head->x + head->w) >= ptr->x && (head->x + head->w) <= (ptr->x + ptr->w)) &&
-	 (head->y >= ptr->y && head->y <= (ptr->y + ptr->h))
-	 ) {
-	   return 1;
-      }
-      ptr = ptr->next;
-    }
-
+  if(linkedListCount <= 5) {
     return 0;
+  }
+
+  while(ptr != NULL) {
+    if(i < 0) {
+      return 0;
+    }
+    
+    if(((head->x) >= ptr->x && (head->x) <= (ptr->x + ptr->w)) && (head->y >= ptr->y && head->y <= (ptr->y + ptr->h)) ) {
+      return 1;
+    }
+    ptr = ptr->prev;
+    --i;
   }
 
   return 0;
