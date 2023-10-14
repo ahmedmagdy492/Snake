@@ -46,7 +46,7 @@ void Append(struct Square* square) {
   square->cur_dir.axis = square->prev_dir.axis = 'x';
 }
 
-void Clear() {
+void ClearLinkedList() {
   struct Square* ptr = snake.head;
 
   while(ptr != NULL) {

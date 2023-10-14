@@ -12,7 +12,6 @@ const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 int timer = 0;
 int isGameOver = 0;
-int isPlaying = 0;
 int prevKey = -1;
 char scoreText[SCORE_LEN];
 
@@ -23,9 +22,8 @@ void RandomizeApplePosition() {
 }
 
 struct Square* ResetGame() {
-  Clear();
+  ClearLinkedList();
   isGameOver = 0;
-  isPlaying = 1;
   SetPlayerScore(0);
   timer = 0;
   prevKey = -1;
@@ -162,7 +160,7 @@ int main() {
 
   CloseWindow();
 
-  Clear();
+  ClearLinkedList();
 
   return 0;
 }
