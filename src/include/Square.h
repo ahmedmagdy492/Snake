@@ -33,6 +33,8 @@ static struct DLinkedList snake = { NULL, NULL };
 void Append(struct Square* square) {
   if(snake.head == NULL && snake.tail == NULL) {
     snake.head = snake.tail = square;
+    square->cur_dir.direction = 1;
+    square->cur_dir.direction = 'x';
   }
   else {
     square->x = snake.tail->x;
@@ -71,7 +73,7 @@ void DrawSnake() {
   }
 }
 
-void Move(struct Direction* dir, int sw, int sh) {
+int Move(struct Direction* dir, int sw, int sh) {
   struct Square* ptr = snake.head;
   struct Direction temp;
   
@@ -88,8 +90,8 @@ void Move(struct Direction* dir, int sw, int sh) {
 
   if(ptr->cur_dir.axis == 'x') {
     ptr->x += (speed * ptr->cur_dir.direction);
-    if(ptr->x > sw) ptr->x = 0;
-    else if (ptr->x < 0) ptr->x = sw;
+    if(ptr->x > sw) return -1;
+    else if (ptr->x < 0) return -1;
   }
   else if(ptr->cur_dir.axis == 'y') {
     ptr->y += (speed * ptr->cur_dir.direction);
@@ -119,6 +121,8 @@ void Move(struct Direction* dir, int sw, int sh) {
     }
     ptr = ptr->next;
   }
+
+  return 1;
 }
 
 void SetPlayerScore(int _score) {

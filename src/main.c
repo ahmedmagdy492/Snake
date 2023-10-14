@@ -11,6 +11,7 @@
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 int timer = 0;
+int hasPlayerStarted = 0;
 int isGameOver = 0;
 int prevKey = -1;
 char scoreText[SCORE_LEN];
@@ -29,10 +30,11 @@ struct Square* ResetGame() {
   prevKey = -1;
   memset(scoreText, 0, SCORE_LEN);
   RandomizeApplePosition();
+  hasPlayerStarted = 0;
 
   struct Square* square = (struct Square*)malloc(sizeof(struct Square));
-  square->x = 10;
-  square->y = 10;
+  square->x = 100;
+  square->y = 100;
   square->w = square->h = SQUARE_LEN;
   square->color = ORANGE;
   square->next = NULL;
@@ -46,8 +48,8 @@ int main() {
   InitAudioDevice();
   
   struct Square* square = (struct Square*)malloc(sizeof(struct Square));
-  square->x = 10;
-  square->y = 10;
+  square->x = 100;
+  square->y = 100;
   square->w = square->h = SQUARE_LEN;
   square->color = ORANGE;
   square->next = NULL;
@@ -65,43 +67,53 @@ int main() {
   while(!WindowShouldClose()) {
     if(!isGameOver) {
       if (IsKeyDown(KEY_RIGHT)) {
-	if(prevKey == KEY_LEFT) {
-	  isGameOver = 1;
-	  PlaySound(fail);
+	if(prevKey != KEY_LEFT) {
+	  if(!hasPlayerStarted) {
+	    hasPlayerStarted = 1;
+	  }
+	  prevKey = KEY_RIGHT;
+	  dir.direction = 1;
+	  dir.axis = 'x';
 	}
-	prevKey = KEY_RIGHT;
-	dir.direction = 1;
-	dir.axis = 'x';
       }
       else if (IsKeyDown(KEY_LEFT)) {
-	if(prevKey == KEY_RIGHT) {
-	  isGameOver = 1;
-	  PlaySound(fail);
+	if(prevKey != KEY_RIGHT) {
+	  if(!hasPlayerStarted) {
+	    hasPlayerStarted = 1;
+	  }
+	  prevKey = KEY_LEFT;
+	  dir.direction = -1;
+	  dir.axis = 'x';
 	}
-	prevKey = KEY_LEFT;
-	dir.direction = -1;
-	dir.axis = 'x';
       }
       else if (IsKeyDown(KEY_UP)) {
-	if(prevKey == KEY_DOWN) {
-	  isGameOver = 1;
-	  PlaySound(fail);
+	if(prevKey != KEY_DOWN) {
+	  if(!hasPlayerStarted) {
+	    hasPlayerStarted = 1;
+	  }
+	  prevKey = KEY_UP;
+	  dir.direction = -1;
+	  dir.axis = 'y';
 	}
-	prevKey = KEY_UP;
-	dir.direction = -1;
-	dir.axis = 'y';
       }
       else if (IsKeyDown(KEY_DOWN)) {
-	if(prevKey == KEY_UP) {
+	if(prevKey != KEY_UP) {
+	  if(!hasPlayerStarted) {
+	    hasPlayerStarted = 1;
+	  }
+	  prevKey = KEY_DOWN;
+	  dir.direction = 1;
+	  dir.axis = 'y';
+	}
+      }
+
+      if(hasPlayerStarted) {
+	int moveResult = Move(&dir, SCREEN_WIDTH, SCREEN_HEIGHT);
+	if(moveResult == -1) {
 	  isGameOver = 1;
 	  PlaySound(fail);
 	}
-	prevKey = KEY_DOWN;
-	dir.direction = 1;
-	dir.axis = 'y';
       }
-
-      Move(&dir, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
     
       BeginDrawing();
