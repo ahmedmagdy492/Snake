@@ -6,3 +6,4 @@ src/*~
 src/include/*~
 src/#*#
 src/include/#*#
+build/main
