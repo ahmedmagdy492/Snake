@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+int GetNextMultipleOf(int multipleOf, int number) {
+
+  while((number % multipleOf) != 0) {
+    --number;
+  }
+
+  return number;
+}
+
 void RevStr(char s[]) {
   int i, j;
 
@@ -15,8 +24,7 @@ void RevStr(char s[]) {
 }
 
 int GetRandNumber(int limit) {
-  srand(time(NULL));
-  return rand() % limit;
+  return GetRandomValue(0, limit);
 }
 
 void IntToAsci(int value, char s[]) {

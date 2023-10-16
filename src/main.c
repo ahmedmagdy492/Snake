@@ -4,12 +4,10 @@
 #include "include/Square.h"
 #include "include/Apple.h"
 #include "include/Helper.h"
+#include "include/Common.h"
 
 #define SCORE_LEN 1000
-#define SQUARE_LEN 25
 
-const int SCREEN_WIDTH = 1600;
-const int SCREEN_HEIGHT = 900;
 int timer = 0;
 int hasPlayerStarted = 0;
 int isGameOver = 0;
@@ -17,8 +15,10 @@ int prevKey = -1;
 char scoreText[SCORE_LEN];
 
 void RandomizeApplePosition() {
-  int x = GetRandNumber(SCREEN_WIDTH - GetAppleWidth());
-  int y = GetRandNumber(SCREEN_HEIGHT - GetAppleHeight());
+  int nextMultipleOf5Width = GetNextMultipleOf(25, SCREEN_WIDTH);
+  int nextMultipleOf5Height = GetNextMultipleOf(25, SCREEN_HEIGHT);
+  int x = GetRandNumber(SCREEN_WIDTH - GetAppleWidth()) % nextMultipleOf5Width;
+  int y = GetRandNumber(SCREEN_HEIGHT - GetAppleHeight()) % nextMultipleOf5Height;
   SetApplePos(x, y);
 }
 
@@ -56,7 +56,7 @@ int main() {
   square->prev = NULL;
   Append(square);
 
-  SetTargetFPS(60);
+  SetTargetFPS(25);
 
   Sound music = LoadSound("resources/scoreplay.ogg");
   Sound fail = LoadSound("resources/fail.ogg");

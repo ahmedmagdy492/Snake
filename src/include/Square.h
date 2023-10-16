@@ -2,8 +2,9 @@
 
 #include <stdlib.h>
 #include <raylib.h>
+#define SQUARE_LEN 25
 
-static int speed = 4;
+static int speedX = 0, speedY = 0;
 static int score = 0;
 
 struct Direction {
@@ -87,12 +88,16 @@ int Move(struct Direction* dir, int sw, int sh) {
   int prevY = ptr->y;
 
   if(ptr->cur_dir.axis == 'x') {
-    ptr->x += (speed * ptr->cur_dir.direction);
+    speedX = SQUARE_LEN;
+    speedY = 0;
+    ptr->x += (speedX * ptr->cur_dir.direction);
     if(ptr->x > sw) return -1;
     else if (ptr->x < 0) return -1;
   }
   else if(ptr->cur_dir.axis == 'y') {
-    ptr->y += (speed * ptr->cur_dir.direction);
+    speedX = 0;
+    speedY = SQUARE_LEN;
+    ptr->y += (speedY * ptr->cur_dir.direction);
     if(ptr->y > sh) ptr->y = 0;
     else if(ptr->y < 0) ptr->y = sh;
   }
@@ -147,33 +152,18 @@ static int GetNodesCount() {
   return count;
 }
 
-/*
-  || ((head->cur_dir.direction == 1 && head->cur_dir.axis == 'y') && (ptr->cur_dir.direction == -1 && ptr->cur_dir.axis == 'x'))
- */
+int HasCollided(struct Square* head, struct Square* ptr) {
+  return (head->x == ptr->x) && (head->y == ptr->y);
+}
+
 int AmICollidingWithMySelf() {
   struct Square* head = snake.head;
   struct Square* ptr = snake.tail;
-  int linkedListCount = GetNodesCount();
-  int noOfElementsToCheck = 0.33 * linkedListCount;
-  printf("0.33*nodes count = %d\n", noOfElementsToCheck);
-  int i = linkedListCount;
-
-  if(linkedListCount <= 10) {
-    return 0;
-  }
 
   while(ptr != NULL) {
-    if(i < 0) {
-      return 0;
-    }
-
-    if( ((head->cur_dir.direction == -1 && head->cur_dir.axis == 'x') && (ptr->cur_dir.direction == 1 && ptr->cur_dir.axis == 'y')) || ( (head->cur_dir.direction == -1 && head->cur_dir.axis == 'x') && (ptr->cur_dir.direction == -1 && ptr->cur_dir.axis == 'y')											  )) {
-      if(((head->x) >= ptr->x && (head->x) <= (ptr->x + ptr->w)) && (head->y >= ptr->y && head->y <= (ptr->y + ptr->h)) ) {
-	return 1;
-      }
-    }
+    if(ptr != head)
+      if(HasCollided(head, ptr)) return 1;
     ptr = ptr->prev;
-    --i;
   }
 
   return 0;
