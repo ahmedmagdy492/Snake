@@ -15,10 +15,12 @@
 #define SCORE_LEN 1000
 
 int timer = 0;
+int framesCounter = 0;
 int hasPlayerStarted = 0;
 int isGameOver = 0;
 int prevKey = -1;
 int isPaused = 0;
+int allowMove = 0;
 char scoreText[SCORE_LEN];
 
 void RandomizeApplePosition() {
@@ -35,6 +37,8 @@ struct Square * ResetGame() {
   SetPlayerScore(0);
   timer = 0;
   prevKey = -1;
+  allowMove = 0;
+  framesCounter = 0;
   memset(scoreText, 0, SCORE_LEN);
   RandomizeApplePosition();
   hasPlayerStarted = 0;
@@ -63,7 +67,7 @@ int main() {
   square -> prev = NULL;
   Append(square);
 
-  SetTargetFPS(25);
+  SetTargetFPS(60);
 
   Sound music = LoadSound("resources/scoreplay.ogg");
   Sound fail = LoadSound("resources/fail.ogg");
@@ -87,8 +91,10 @@ int main() {
             prevKey = KEY_RIGHT;
             dir.direction = 1;
             dir.axis = 'x';
+            allowMove = 0;
           }
-        } else if (IsKeyPressed(KEY_LEFT)) {
+        } 
+        if (IsKeyPressed(KEY_LEFT)) {
           if (prevKey != KEY_RIGHT) {
             if (!hasPlayerStarted) {
               hasPlayerStarted = 1;
@@ -96,8 +102,10 @@ int main() {
             prevKey = KEY_LEFT;
             dir.direction = -1;
             dir.axis = 'x';
+            allowMove = 0;
           }
-        } else if (IsKeyPressed(KEY_UP)) {
+        } 
+        if (IsKeyPressed(KEY_UP)) {
           if (prevKey != KEY_DOWN) {
             if (!hasPlayerStarted) {
               hasPlayerStarted = 1;
@@ -105,8 +113,10 @@ int main() {
             prevKey = KEY_UP;
             dir.direction = -1;
             dir.axis = 'y';
+            allowMove = 0;
           }
-        } else if (IsKeyPressed(KEY_DOWN)) {
+        } 
+        if (IsKeyPressed(KEY_DOWN)) {
           if (prevKey != KEY_UP) {
             if (!hasPlayerStarted) {
               hasPlayerStarted = 1;
@@ -118,11 +128,13 @@ int main() {
         }
 
         if (hasPlayerStarted) {
-          int moveResult = Move( & dir, SCREEN_WIDTH, SCREEN_HEIGHT);
-          if (moveResult == -1) {
-            isGameOver = 1;
-            PlaySound(fail);
-          }
+          if((framesCounter % 3) == 0) {
+            int moveResult = Move(&dir, SCREEN_WIDTH, SCREEN_HEIGHT);
+            if (moveResult == -1) {
+              isGameOver = 1;
+              PlaySound(fail);
+            }
+          } 
         }
 
         BeginDrawing();
@@ -159,6 +171,7 @@ int main() {
         EndDrawing();
 
         ++timer;
+        ++framesCounter;
       }
       else {
         BeginDrawing();

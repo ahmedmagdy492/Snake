@@ -159,11 +159,15 @@ int HasCollided(struct Square* head, struct Square* ptr) {
 int AmICollidingWithMySelf() {
   struct Square* head = snake.head;
   struct Square* ptr = snake.tail;
+  int i = 0;
 
   while(ptr != NULL) {
-    if(ptr != head)
-      if(HasCollided(head, ptr)) return 1;
+    if(i >= 2) {
+      if(ptr != head)
+        if(HasCollided(head, ptr)) return 1;
+    }
     ptr = ptr->prev;
+    ++i;
   }
 
   return 0;
