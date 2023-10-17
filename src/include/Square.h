@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <raylib.h>
 #define SQUARE_LEN 25
+#define MAX_SNAKE_LEN 100
 
 static int speedX = 0, speedY = 0;
 static int score = 0;
@@ -32,6 +33,9 @@ struct DLinkedList {
 static struct DLinkedList snake = { NULL, NULL };
 
 void Append(struct Square* square) {
+  if(GetNodesCount() == MAX_SNAKE_LEN)
+    return;
+
   if(snake.head == NULL && snake.tail == NULL) {
     snake.head = snake.tail = square;
   }
