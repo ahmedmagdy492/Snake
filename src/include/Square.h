@@ -32,6 +32,8 @@ struct DLinkedList {
 
 static struct DLinkedList snake = { NULL, NULL };
 
+static int GetNodesCount();
+
 void Append(struct Square* square) {
   if(GetNodesCount() == MAX_SNAKE_LEN)
     return;
